@@ -42,16 +42,39 @@ func (db *DB) Create_table(name string, colums_name []string, colums_type []refl
 	}
 	db.tables = append(db.tables, table)
 }
+func (db *DB) In_dbs() {
+	var chiose int
+	for {
+		fmt.Scan(&chiose)
+		switch chiose {
+		case 0:
+			return
+		case 1:
+			var str string
+			var colums_name []string
+			var colums_type []reflect.Type
+
+			fmt.Scan(&str)
+			fmt.Scan(&colums_name)
+			fmt.Scan(&colums_type)
+			db.Create_table(str, colums_name, colums_type)
+		default:
+			fmt.Println("无效操作")
+		}
+	}
+
+}
 
 type DB struct {
 	name   string
 	tables []table
 }
 
-func (dbs *DBS) Create_db(name string) {
-	var db = DB{}
+func (dbs *DBS) Create_db(name string) DB {
+	var db DB
 	db.name = name
 	dbs.databases = append(dbs.databases, db)
+	return db
 }
 
 type DBS struct {
@@ -68,12 +91,22 @@ var dbs DBS
 
 func main() {
 	var chiose int
+
 	fmt.Println("欢迎来到GonySQL数据库系统")
-	switch chiose {
-	case 1:
-		var str string
-		fmt.Print("请输入数据库名称:")
-		fmt.Scan(&str)
-		dbs.Create_db(str)
+
+	for {
+		fmt.Scan(&chiose)
+		switch chiose {
+		case 1:
+			var str string
+			fmt.Print("请输入数据库名称:")
+			fmt.Scan(&str)
+			db := dbs.Create_db(str)
+			db.In_dbs()
+		case 2:
+			fmt.Println(dbs)
+		case 0:
+			return
+		}
 	}
 }
