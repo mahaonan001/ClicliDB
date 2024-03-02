@@ -5,9 +5,9 @@ import (
 	"reflect"
 )
 
-type colum_append interface {
-	Append_content(any)
-}
+// type colum_append interface {
+// 	Append_content(any)
+// }
 
 func (c *colum) Append_content(contex any) {
 	if reflect.TypeOf(contex) != c.Type {
@@ -45,19 +45,57 @@ func (db *DB) Create_table(name string, colums_name []string, colums_type []refl
 func (db *DB) In_dbs() {
 	var chiose int
 	for {
+		fmt.Println(`
+		0:返回上一级
+		1:创建表
+		2:加载表
+		`)
 		fmt.Scan(&chiose)
 		switch chiose {
 		case 0:
 			return
 		case 1:
 			var str string
-			var colums_name []string
-			var colums_type []reflect.Type
+			var columnsName []string
+			var columnsType []reflect.Type
 
+			fmt.Print("请输入表名: ")
 			fmt.Scan(&str)
-			fmt.Scan(&colums_name)
-			fmt.Scan(&colums_type)
-			db.Create_table(str, colums_name, colums_type)
+
+			// 读取字符串切片
+			fmt.Print("Enter the number of columns: ")
+			var numColumns int
+			fmt.Scan(&numColumns)
+
+			// 初始化切片
+			columnsName = make([]string, numColumns)
+			columnsType = make([]reflect.Type, numColumns)
+
+			// 读取每个列的名称
+			for i := 0; i < numColumns; i++ {
+				fmt.Printf("Enter column name %d: ", i)
+				fmt.Scan(&columnsName[i])
+			}
+
+			// 注意：fmt.Scan不支持直接读取到reflect.Type切片
+			// 你需要根据实际情况来处理columnsType的赋值
+			// 这里我们假设columnsType是一个固定类型的切片，例如都是string类型
+			for i := 0; i < numColumns; i++ {
+				columnsType[i] = reflect.TypeOf("")
+			}
+
+			// 输出读取的列名
+			fmt.Println("Column names:")
+			for _, name := range columnsName {
+				fmt.Println(name)
+			}
+
+			// 输出读取的列类型
+			fmt.Println("Column types:")
+			for _, t := range columnsType {
+				fmt.Println(t)
+			}
+			db.Create_table(str, columnsName, columnsType)
 		default:
 			fmt.Println("无效操作")
 		}
@@ -92,9 +130,15 @@ var dbs DBS
 func main() {
 	var chiose int
 
-	fmt.Println("欢迎来到GonySQL数据库系统")
+	fmt.Println("		欢迎来到GonySQL数据库系统")
 
 	for {
+		fmt.Println(`
+		请输入数字:
+			0:退出GonySQL
+			1:创建数据库
+			2:查看SQL
+			3:载入数据库`)
 		fmt.Scan(&chiose)
 		switch chiose {
 		case 1:
@@ -105,8 +149,13 @@ func main() {
 			db.In_dbs()
 		case 2:
 			fmt.Println(dbs)
+		case 3:
+			fmt.Println()
+			fmt.Println("请选择数据库:")
 		case 0:
 			return
+		default:
+			fmt.Println("无效操作")
 		}
 	}
 }
